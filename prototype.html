@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+    #inputNumber {
+      display: flex;
+      justify-content: center;
+      user-select: none;
+      color: gray;
+      font-size: 30px;
+      border: 0;
+      font-family: sans-serif;
+    }
+
+    #inputNumber:empty:not(:focus)::before {
+      content: attr(data-placeholder);
+    }
+
+    #grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      grid-gap: 2px;
+      background-color: white;
+      color: white;
+      height: 100%;
+      width: 100%;
+    }
+
+    .buttonChecker {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-color: royalblue;
+      min-width: 30vw;
+      min-height: 30vh;
+      color: white;
+      border-radius: 3px;
+      border: 0;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .buttonChecker:disabled {
+      background-color: lightgray;
+    }
+
+
+    .btnFunctionality {
+      font-size: 15px;
+    }
+
+  </style>
+    <script defer>
+    window.onload = () => {
+      init();
+      addEventListenerToButtonsLetter();
+      addEventListenerToButtonsNumber();
+      addEventListenerToButtonsFunctional();
+    }
+
+
+    // get all buttons with class btnLetter
+    const buttonsLetter = document.getElementsByClassName("btnLetter");
+    // get all buttons with class btnNumber
+    const buttonsNumber = document.getElementsByClassName("btnNumber");
+    // get all buttons with class btnFunctionality
+    const buttonsFunctional = document.getElementsByClassName("btnFunctional");
+
+    const init = () => {
+      // set the initial state of the buttons
+      document.getElementById("inputNumber").innerHTML = "";
+      setEnableStateOfButtons("btnLetter", true);
+      setEnableStateOfButtons("btnNumber", false);
+      setEnableStateOfButtons("btnCheck", false);
+      document.getElementById("btnCheck").disabled = true;
+
+    }
+
+    const addEventListenerToButtonsLetter = () => {
+      for (let i = 0; i < buttonsLetter.length; i++) {
+        buttonsLetter[i].addEventListener("click", function () {
+          let inputNumber = document.getElementById("inputNumber").innerHTML;
+          const buttonValue = this.innerHTML;
+
+          if (inputNumber.length < 3) {
+            document.getElementById("inputNumber").innerHTML = inputNumber + buttonValue;
+            inputNumber = document.getElementById("inputNumber").innerHTML;
+            document.getElementById("btnCheck").disabled = true;
+          }
+          if (inputNumber.length === 3) {
+            document.getElementById("inputNumber").innerHTML = inputNumber + "-";
+            setEnableStateOfButtons("btnLetter", false);
+            setEnableStateOfButtons("btnNumber");
+          }
+        });
+      }
+    }
+
+    const addEventListenerToButtonsNumber = () => {
+      for (let i = 0; i < buttonsNumber.length; i++) {
+        buttonsNumber[i].addEventListener("click", function () {
+          const inputNumber = document.getElementById("inputNumber").innerHTML;
+          const buttonValue = this.innerHTML;
+          if (inputNumber.length >= 4) {
+            setEnableStateOfButtons("btnNumber");
+            document.getElementById("inputNumber").innerHTML = inputNumber + buttonValue;
+            document.getElementById("btnCheck").disabled = false;
+          }
+          if (inputNumber.length >= 7) {
+            setEnableStateOfButtons("btnLetter", false);
+            setEnableStateOfButtons("btnNumber", false);
+          }
+        });
+      }
+    }
+
+    const addEventListenerToButtonsFunctional = () => {
+      for (let i = 0; i < buttonsFunctional.length; i++) {
+        buttonsFunctional[i].addEventListener("click", function () {
+          const buttonValue = this.innerHTML;
+          const inputNumber = document.getElementById("inputNumber").innerHTML;
+          if (buttonValue === "CLEAR") {
+            init();
+          } else if (buttonValue === "CHECK") {
+            document.getElementById("inputNumber").innerHTML = "not implemented yet";
+            setTimeout(function () {
+              document.getElementById("inputNumber").innerHTML = inputNumber;
+            }, 3000);
+          }
+        });
+      }
+    }
+
+    const setEnableStateOfButtons = (className, setEnabled = true) =>
+      Array.from(document.getElementsByClassName(className)).forEach(button => {
+          button.disabled = !setEnabled;
+        }
+      );
+
+  </script>
+
+</head>
+<body>
+
+<h1 id="inputNumber" data-placeholder="ABC-123" contenteditable></h1>
+
+<div id="grid-container">
+    <button id="btnA" class="buttonChecker btnLetter">A</button>
+    <button id="btnB" class="buttonChecker btnLetter">B</button>
+    <button id="btnC" class="buttonChecker btnLetter">C</button>
+    <button id="btn1" class="buttonChecker btnNumber">1</button>
+    <button id="btn2" class="buttonChecker btnNumber">2</button>
+    <button id="btn3" class="buttonChecker btnNumber">3</button>
+    <button id="btnMinus" class="buttonChecker" disabled>-</button>
+    <button id="btnClear" class="buttonChecker btnFunctional">CLEAR</button>
+    <button id="btnCheck" class="buttonChecker btnFunctional">CHECK</button>
+</div>
+
+</body>
+</html>
